@@ -8,9 +8,13 @@
 import SwiftUI
 
 struct ContentView: View {
+    
+    var timerController = TimerController()
+    
     var body: some View {
-        Text("Hello, world!")
-            .padding()
+        Button(action: timerController.start) {
+                Text("Play")
+        }
     }
 }
 

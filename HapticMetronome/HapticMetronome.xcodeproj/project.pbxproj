@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B1280371258D067400EC11E4 /* HapticController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1280370258D067400EC11E4 /* HapticController.swift */; };
+		B1280374258D12B600EC11E4 /* TimerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1280373258D12B600EC11E4 /* TimerController.swift */; };
 		B1ACA5ED258CE10B00C10C3F /* HapticMetronomeApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1ACA5EC258CE10B00C10C3F /* HapticMetronomeApp.swift */; };
 		B1ACA5EF258CE10B00C10C3F /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1ACA5EE258CE10B00C10C3F /* ContentView.swift */; };
 		B1ACA5F1258CE10E00C10C3F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B1ACA5F0258CE10E00C10C3F /* Assets.xcassets */; };
@@ -14,6 +16,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		B1280370258D067400EC11E4 /* HapticController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticController.swift; sourceTree = "<group>"; };
+		B1280373258D12B600EC11E4 /* TimerController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerController.swift; sourceTree = "<group>"; };
 		B1ACA5E9258CE10B00C10C3F /* HapticMetronome.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HapticMetronome.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B1ACA5EC258CE10B00C10C3F /* HapticMetronomeApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticMetronomeApp.swift; sourceTree = "<group>"; };
 		B1ACA5EE258CE10B00C10C3F /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -54,6 +58,8 @@
 			children = (
 				B1ACA5EC258CE10B00C10C3F /* HapticMetronomeApp.swift */,
 				B1ACA5EE258CE10B00C10C3F /* ContentView.swift */,
+				B1280370258D067400EC11E4 /* HapticController.swift */,
+				B1280373258D12B600EC11E4 /* TimerController.swift */,
 				B1ACA5F0258CE10E00C10C3F /* Assets.xcassets */,
 				B1ACA5F5258CE10E00C10C3F /* Info.plist */,
 				B1ACA5F2258CE10E00C10C3F /* Preview Content */,
@@ -139,6 +145,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				B1ACA5EF258CE10B00C10C3F /* ContentView.swift in Sources */,
+				B1280374258D12B600EC11E4 /* TimerController.swift in Sources */,
+				B1280371258D067400EC11E4 /* HapticController.swift in Sources */,
 				B1ACA5ED258CE10B00C10C3F /* HapticMetronomeApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
