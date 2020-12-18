@@ -1,0 +1,2 @@
+# HapticMetronome-iOS
+Core Hapticsを利用した触覚フィードバックメトロノームiOSアプリ
