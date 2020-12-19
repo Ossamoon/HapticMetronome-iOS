@@ -12,12 +12,21 @@ class TimerController {
     var hapticController = HapticController()
     private var timer = Timer()
     
-    func start() {
+    func prepare() {
+        hapticController.engineStart()
+    }
+    
+    func start(mode: Int) {
         self.timer.invalidate()
-        hapticController.mode = 0
+        hapticController.mode = mode
         self.timer = Timer.scheduledTimer(withTimeInterval: 60.0 / bpm, repeats: true){
             _ in
             self.hapticController.play()
         }
+    }
+    
+    func stop() {
+        self.timer.invalidate()
+        hapticController.engineStop()
     }
 }

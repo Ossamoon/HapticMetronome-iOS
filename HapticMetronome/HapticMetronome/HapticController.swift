@@ -23,36 +23,43 @@ struct HapticController {
         TimeInterval(0.1 * Double(mode))
     }
     
-    
-    init(){
-        engine = try! CHHapticEngine()
-        try! engine.start()
+    private var hapticEvent: CHHapticEvent {
+        CHHapticEvent(eventType: self.eventType, parameters: [
+            CHHapticEventParameter(parameterID: .hapticSharpness, value: self.sharpness),
+            CHHapticEventParameter(parameterID: .hapticIntensity, value: self.intensity),
+        ], relativeTime: 0, duration: self.duration)
     }
     
     
-    private func createEvent() -> CHHapticEvent{
-        
-        let eventType = self.eventType
-        let duration = self.duration
-        let sharpness = self.sharpness
-        let intensity = self.intensity
-        let hapticEvent = CHHapticEvent(eventType: eventType, parameters: [
-            CHHapticEventParameter(parameterID: .hapticSharpness, value: sharpness),
-            CHHapticEventParameter(parameterID: .hapticIntensity, value: intensity),
-        ], relativeTime: 0, duration: duration)
-        
-        return hapticEvent
+    init(){
+        self.engine = try! CHHapticEngine()
     }
     
     
     func play() {
         
-        var events: [CHHapticEvent] = []
-        events.append(createEvent())
-
-        guard events.count > 0 else { return }
-        let pattern = try! CHHapticPattern(events: events, parameters: [])
+        let pattern = try! CHHapticPattern(events: [self.hapticEvent], parameters: [])
         let player = try! engine.makePlayer(with: pattern)
-        try! player.start(atTime: CHHapticTimeImmediate)
+        do {
+            try player.start(atTime: CHHapticTimeImmediate)
+        } catch {
+            print("error occurs at starting haptic player")
+            print(error.localizedDescription)
+        }
+    }
+    
+    func engineStart(){
+        do {
+            try engine.start()
+            print("engine started")
+        } catch {
+            print("error occurs at starting haptic engine")
+            print(error.localizedDescription)
+        }
+    }
+    
+    func engineStop(){
+        engine.stop(completionHandler: nil)
+        print("engine stopped")
     }
 }
