@@ -11,7 +11,7 @@ import AVFoundation
 class SoundController: NSObject, AVAudioPlayerDelegate {
     
     private var counter: Int
-    private let numberOfAudioPlayer: Int = 4
+    private let numberOfAudioPlayer: Int = 5
     private var audioPlayers: [AVAudioPlayer] = []
     
     override init() {

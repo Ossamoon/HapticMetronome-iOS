@@ -9,24 +9,27 @@ import Foundation
 
 class TimerController {
     
-    var bpm: Double = 120.0
-    
-    var hapticController = HapticController()
-    var soundController = SoundController()
     private var timer = Timer()
+    
+    private var bpm: Double = 240.0
+    
+    private var hapticController = HapticController()
+    private var soundController = SoundController()
+    
     
     func prepare() {
         hapticController.engineStart()
         soundController.prepare()
     }
     
-    func start(mode: Int) {
+    func start(mode: Int, bpm: Int) {
         self.timer.invalidate()
+        self.bpm = Double(bpm)
         hapticController.mode = mode
-        self.timer = Timer.scheduledTimer(withTimeInterval: 60.0 / bpm, repeats: true){
+        self.timer = Timer.scheduledTimer(withTimeInterval: 60.0 / self.bpm, repeats: true){
             _ in
-            self.hapticController.play()
             self.soundController.play()
+            self.hapticController.play()
         }
     }
     

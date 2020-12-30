@@ -11,17 +11,26 @@ struct ContentView: View {
     
     var timerController: TimerController
     
+    private var bpm: Int {
+        Int(bpm_str)!
+    }
+    @State private var bpm_str: String = "120"
+    
+    private var mode: Int {
+        Int(mode_str)!
+    }
+    @State private var mode_str: String = "0"
+    
     var body: some View {
         VStack {
-            Button(action: {timerController.start(mode: 0)}) {
-                Text("Play mode 0")
+            TextField("BPM", text: $bpm_str)
+                .padding()
+            TextField("Mode", text: $mode_str)
+                .padding()
+            Button(action: {timerController.start(mode: mode, bpm: bpm)}) {
+                Text("Play")
             }
-            Button(action: {timerController.start(mode: 1)}) {
-                Text("Play mode 1")
-            }
-            Button(action: {timerController.start(mode: 2)}) {
-                Text("Play mode 2")
-            }
+            .padding()
         }
     }
     
