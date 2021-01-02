@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ContentView: View {
     
-    var timerController: TimerController
+    var hapticMetronome: HapticMetronome = HapticMetronome()
     
     private var bpm: Int {
         Int(bpm_str)!
@@ -27,24 +27,28 @@ struct ContentView: View {
                 .padding()
             TextField("Mode", text: $mode_str)
                 .padding()
-            Button(action: {timerController.start(mode: mode, bpm: bpm)}) {
+            Button(action: {
+                hapticMetronome.bpm = Double(self.bpm)
+                hapticMetronome.mode = self.mode
+                hapticMetronome.play()
+            }) {
                 Text("Play")
             }
             .padding()
         }
     }
     
-    func onActive() {
-        timerController.prepare()
-    }
-    
-    func onInactive() {
-        timerController.stop()
-    }
+//    func onActive() {
+//        timerController.prepare()
+//    }
+//
+//    func onInactive() {
+//        timerController.stop()
+//    }
 }
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView(timerController: TimerController())
+        ContentView()
     }
 }
