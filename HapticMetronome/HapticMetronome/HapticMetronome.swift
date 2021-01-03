@@ -10,7 +10,7 @@ import CoreHaptics
 
 class HapticMetronome {
     // Metronome Parameter
-    var mode: Int = 0
+    var mode: HapticMode = .none
     var bpm: Double = 120.0
     
     // Audio Data
@@ -29,16 +29,42 @@ class HapticMetronome {
     private let sharpness: Float = 0.4
     private let intensity: Float = 1.0
     private var eventType: CHHapticEvent.EventType {
-        self.mode == 0 ? .hapticTransient : .hapticContinuous
+        self.mode == .click ? .hapticTransient : .hapticContinuous
     }
-    private var hapticDuration: TimeInterval {
-        min(audioDuration, TimeInterval(0.1 * Double(mode)))
+    private var hapticDurationShort: TimeInterval {
+        min(audioDuration, TimeInterval(0.08))
+    }
+    private var hapticDurationLong: TimeInterval {
+        min(audioDuration, TimeInterval(0.18))
     }
     
     // Audio Event Parameters:
     private let audioVolume: Float = 1.0
     private var audioDuration: TimeInterval {
         TimeInterval(60.0 / bpm)
+    }
+    
+    // Haptic and Audio Events
+    private var hapticClickEvent: CHHapticEvent {
+        CHHapticEvent(eventType: .hapticTransient, parameters: [
+            CHHapticEventParameter(parameterID: .hapticSharpness, value: self.sharpness),
+            CHHapticEventParameter(parameterID: .hapticIntensity, value: self.intensity),
+        ], relativeTime: 0)
+    }
+    private var hapticVibrationShortEvent: CHHapticEvent {
+        CHHapticEvent(eventType: self.eventType, parameters: [
+            CHHapticEventParameter(parameterID: .hapticSharpness, value: self.sharpness),
+            CHHapticEventParameter(parameterID: .hapticIntensity, value: self.intensity),
+        ], relativeTime: 0, duration: self.hapticDurationShort)
+    }
+    private var hapticVibrationLongEvent: CHHapticEvent {
+        CHHapticEvent(eventType: self.eventType, parameters: [
+            CHHapticEventParameter(parameterID: .hapticSharpness, value: self.sharpness),
+            CHHapticEventParameter(parameterID: .hapticIntensity, value: self.intensity),
+        ], relativeTime: 0, duration: self.hapticDurationLong)
+    }
+    private var audioEvent: CHHapticEvent {
+        CHHapticEvent(audioResourceID: audioResorceId, parameters: [ CHHapticEventParameter(parameterID: .audioVolume, value: self.audioVolume)], relativeTime: 0, duration: self.audioDuration)
     }
     
     
@@ -125,12 +151,25 @@ class HapticMetronome {
             
             // Create haptic pattern
             audioResorceId = try engine.registerAudioResource(audioURL!)
-            let hapticEvent = CHHapticEvent(eventType: self.eventType, parameters: [
-                CHHapticEventParameter(parameterID: .hapticSharpness, value: self.sharpness),
-                CHHapticEventParameter(parameterID: .hapticIntensity, value: self.intensity),
-            ], relativeTime: 0, duration: self.hapticDuration)
-            let audioEvent = CHHapticEvent(audioResourceID: audioResorceId, parameters: [ CHHapticEventParameter(parameterID: .audioVolume, value: self.audioVolume)], relativeTime: 0, duration: self.audioDuration)
-            let pattern = try CHHapticPattern(events: [hapticEvent, audioEvent], parameters: [])
+            var eventList: [CHHapticEvent] = []
+            eventList.append(audioEvent)
+            switch self.mode {
+            case .click:
+                eventList.append(hapticClickEvent)
+            case .vibrationShort:
+                eventList.append(hapticVibrationShortEvent)
+            case .vibrationLong:
+                eventList.append(hapticVibrationLongEvent)
+            case .clickAndVibrationShort:
+                eventList.append(hapticClickEvent)
+                eventList.append(hapticVibrationShortEvent)
+            case .clickAndVibrationLong:
+                eventList.append(hapticClickEvent)
+                eventList.append(hapticVibrationLongEvent)
+            case .none:
+                break
+            }
+            let pattern = try CHHapticPattern(events: eventList, parameters: [])
             
             // Create and start player
             player = try engine.makeAdvancedPlayer(with: pattern)

@@ -7,6 +7,17 @@
 
 import SwiftUI
 
+enum HapticMode: String, CaseIterable, Identifiable {
+    case none
+    case click
+    case vibrationShort
+    case vibrationLong
+    case clickAndVibrationShort
+    case clickAndVibrationLong
+    
+    var id: String {self.rawValue}
+}
+
 struct ContentView: View {
     
     var hapticMetronome: HapticMetronome = HapticMetronome()
@@ -15,21 +26,21 @@ struct ContentView: View {
         Int(bpm_str)!
     }
     @State private var bpm_str: String = "120"
-    
-    private var mode: Int {
-        Int(mode_str)!
-    }
-    @State private var mode_str: String = "0"
+    @State private var selectedMode: HapticMode = HapticMode.none
     
     var body: some View {
         VStack {
             TextField("BPM", text: $bpm_str)
                 .padding()
-            TextField("Mode", text: $mode_str)
-                .padding()
+            Picker(selection: $selectedMode, label: Text("Haptic Mode")) {
+                ForEach(HapticMode.allCases) {
+                    Text($0.rawValue.capitalized).tag($0)
+                }
+            }
             Button(action: {
+                print(selectedMode)
                 hapticMetronome.bpm = Double(self.bpm)
-                hapticMetronome.mode = self.mode
+                hapticMetronome.mode = self.selectedMode
                 hapticMetronome.play()
             }) {
                 Text("Play")
