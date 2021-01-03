@@ -7,10 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		B1264C8D259C222700FF2761 /* SoundController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1264C8C259C222700FF2761 /* SoundController.swift */; };
 		B1264C8F259C227200FF2761 /* sound1.aif in Resources */ = {isa = PBXBuildFile; fileRef = B1264C8B259C21EC00FF2761 /* sound1.aif */; };
 		B1280371258D067400EC11E4 /* HapticMetronome.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1280370258D067400EC11E4 /* HapticMetronome.swift */; };
-		B1280374258D12B600EC11E4 /* TimerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1280373258D12B600EC11E4 /* TimerController.swift */; };
 		B1ACA5ED258CE10B00C10C3F /* HapticMetronomeApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1ACA5EC258CE10B00C10C3F /* HapticMetronomeApp.swift */; };
 		B1ACA5EF258CE10B00C10C3F /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1ACA5EE258CE10B00C10C3F /* ContentView.swift */; };
 		B1ACA5F1258CE10E00C10C3F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B1ACA5F0258CE10E00C10C3F /* Assets.xcassets */; };
@@ -19,9 +17,7 @@
 
 /* Begin PBXFileReference section */
 		B1264C8B259C21EC00FF2761 /* sound1.aif */ = {isa = PBXFileReference; lastKnownFileType = file; path = sound1.aif; sourceTree = "<group>"; };
-		B1264C8C259C222700FF2761 /* SoundController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundController.swift; sourceTree = "<group>"; };
 		B1280370258D067400EC11E4 /* HapticMetronome.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticMetronome.swift; sourceTree = "<group>"; };
-		B1280373258D12B600EC11E4 /* TimerController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerController.swift; sourceTree = "<group>"; };
 		B1ACA5E9258CE10B00C10C3F /* HapticMetronome.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HapticMetronome.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B1ACA5EC258CE10B00C10C3F /* HapticMetronomeApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticMetronomeApp.swift; sourceTree = "<group>"; };
 		B1ACA5EE258CE10B00C10C3F /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -71,8 +67,6 @@
 				B1ACA5EC258CE10B00C10C3F /* HapticMetronomeApp.swift */,
 				B1ACA5EE258CE10B00C10C3F /* ContentView.swift */,
 				B1280370258D067400EC11E4 /* HapticMetronome.swift */,
-				B1280373258D12B600EC11E4 /* TimerController.swift */,
-				B1264C8C259C222700FF2761 /* SoundController.swift */,
 				B1ACA5F0258CE10E00C10C3F /* Assets.xcassets */,
 				B1264C88259C20DE00FF2761 /* Sounds */,
 				B1ACA5F5258CE10E00C10C3F /* Info.plist */,
@@ -160,8 +154,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				B1ACA5EF258CE10B00C10C3F /* ContentView.swift in Sources */,
-				B1264C8D259C222700FF2761 /* SoundController.swift in Sources */,
-				B1280374258D12B600EC11E4 /* TimerController.swift in Sources */,
 				B1280371258D067400EC11E4 /* HapticMetronome.swift in Sources */,
 				B1ACA5ED258CE10B00C10C3F /* HapticMetronomeApp.swift in Sources */,
 			);

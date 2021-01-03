@@ -46,13 +46,13 @@ class HapticMetronome {
         let hapticCapability = CHHapticEngine.capabilitiesForHardware()
         supportsHaptics = hapticCapability.supportsHaptics
         
-        createAndStartHapticEngine()
-        
         if let path = Bundle.main.path(forResource: "sound1", ofType: "aif") {
             audioURL = URL(fileURLWithPath: path)
         } else {
             print("Error: Failed to find audioURL")
         }
+        
+        createAndStartHapticEngine()
     }
     
     private func createAndStartHapticEngine() {
@@ -117,11 +117,13 @@ class HapticMetronome {
         guard supportsHaptics else { return }
         
         do {
+            // Check for engine state
             if engineNeedsStart {
                 try engine.start()
                 engineNeedsStart = false
             }
             
+            // Create haptic pattern
             audioResorceId = try engine.registerAudioResource(audioURL!)
             let hapticEvent = CHHapticEvent(eventType: self.eventType, parameters: [
                 CHHapticEventParameter(parameterID: .hapticSharpness, value: self.sharpness),
@@ -129,17 +131,19 @@ class HapticMetronome {
             ], relativeTime: 0, duration: self.hapticDuration)
             let audioEvent = CHHapticEvent(audioResourceID: audioResorceId, parameters: [ CHHapticEventParameter(parameterID: .audioVolume, value: self.audioVolume)], relativeTime: 0, duration: self.audioDuration)
             let pattern = try CHHapticPattern(events: [hapticEvent, audioEvent], parameters: [])
+            
+            // Create and start player
             player = try engine.makeAdvancedPlayer(with: pattern)
             player!.loopEnabled = true
-            
             try player!.start(atTime: CHHapticTimeImmediate)
         } catch let error {
             print("Haptic Playback Error: \(error)")
         }
     }
     
-    func engineStop(){
-        engine.stop(completionHandler: nil)
-        print("engine stopped")
+    func stop(){
+        guard supportsHaptics else { return }
+        engine.stop()
+        print("engine stopped normally")
     }
 }

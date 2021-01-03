@@ -22,10 +22,8 @@ struct HapticMetronomeApp: App {
 //                print("App is in background")
 //            case .active:
 //                print("App is Active")
-//                contentView.onActive()
 //            case .inactive:
 //                print("App is Inactive")
-//                contentView.onInactive()
 //            @unknown default:
 //                print("New App state not yet introduced")
 //            }

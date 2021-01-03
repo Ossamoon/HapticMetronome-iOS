@@ -37,14 +37,6 @@ struct ContentView: View {
             .padding()
         }
     }
-    
-//    func onActive() {
-//        timerController.prepare()
-//    }
-//
-//    func onInactive() {
-//        timerController.stop()
-//    }
 }
 
 struct ContentView_Previews: PreviewProvider {
