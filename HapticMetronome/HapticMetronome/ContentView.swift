@@ -38,7 +38,6 @@ struct ContentView: View {
                 }
             }
             Button(action: {
-                print(selectedMode)
                 hapticMetronome.bpm = Double(self.bpm)
                 hapticMetronome.mode = self.selectedMode
                 hapticMetronome.play()

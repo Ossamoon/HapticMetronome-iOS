@@ -7,11 +7,15 @@
 
 import Foundation
 import CoreHaptics
+import AVFoundation
 
 class HapticMetronome {
     // Metronome Parameter
     var mode: HapticMode = .none
     var bpm: Double = 120.0
+    
+    // Audio Session
+    var audioSession: AVAudioSession
     
     // Audio Data
     private var audioURL: URL?
@@ -28,9 +32,6 @@ class HapticMetronome {
     // Haptic Event Parameters:
     private let sharpness: Float = 0.4
     private let intensity: Float = 1.0
-    private var eventType: CHHapticEvent.EventType {
-        self.mode == .click ? .hapticTransient : .hapticContinuous
-    }
     private var hapticDurationShort: TimeInterval {
         min(audioDuration, TimeInterval(0.08))
     }
@@ -52,13 +53,13 @@ class HapticMetronome {
         ], relativeTime: 0)
     }
     private var hapticVibrationShortEvent: CHHapticEvent {
-        CHHapticEvent(eventType: self.eventType, parameters: [
+        CHHapticEvent(eventType: .hapticContinuous, parameters: [
             CHHapticEventParameter(parameterID: .hapticSharpness, value: self.sharpness),
             CHHapticEventParameter(parameterID: .hapticIntensity, value: self.intensity),
         ], relativeTime: 0, duration: self.hapticDurationShort)
     }
     private var hapticVibrationLongEvent: CHHapticEvent {
-        CHHapticEvent(eventType: self.eventType, parameters: [
+        CHHapticEvent(eventType: .hapticContinuous, parameters: [
             CHHapticEventParameter(parameterID: .hapticSharpness, value: self.sharpness),
             CHHapticEventParameter(parameterID: .hapticIntensity, value: self.intensity),
         ], relativeTime: 0, duration: self.hapticDurationLong)
@@ -69,6 +70,14 @@ class HapticMetronome {
     
     
     init(){
+        audioSession = AVAudioSession.sharedInstance()
+        do {
+            try audioSession.setCategory(.playback)
+            try audioSession.setActive(true)
+        } catch {
+            print("Failed to set and activate audio session category.")
+        }
+        
         let hapticCapability = CHHapticEngine.capabilitiesForHardware()
         supportsHaptics = hapticCapability.supportsHaptics
         
@@ -87,7 +96,7 @@ class HapticMetronome {
         
         // Create and configure a haptic engine.
         do {
-            engine = try CHHapticEngine()
+            engine = try CHHapticEngine(audioSession: audioSession)
         } catch let error {
             fatalError("Engine Creation Error: \(error)")
         }
@@ -183,6 +192,7 @@ class HapticMetronome {
     func stop(){
         guard supportsHaptics else { return }
         engine.stop()
+        engineNeedsStart = true
         print("engine stopped normally")
     }
 }
