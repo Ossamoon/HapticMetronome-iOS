@@ -14,6 +14,7 @@ class HapticMetronome {
     var modeClick: Click = .off
     var modeVibration: Vibrasion = .off
     var bpm: Double = 120.0
+    var old_bpm: Double = 120.0
     
     // Audio Session
     var audioSession: AVAudioSession
@@ -31,8 +32,8 @@ class HapticMetronome {
     var player: CHHapticAdvancedPatternPlayer?
     
     // Haptic Event Parameters:
-    private let sharpness: Float = 0.4
-    private let intensity: Float = 1.0
+    private let sharpness = CHHapticEventParameter(parameterID: .hapticSharpness, value: 0.4)
+    private let intensity = CHHapticEventParameter(parameterID: .hapticIntensity, value: 1.0)
     private var hapticDurationShort: TimeInterval {
         min(audioDuration, TimeInterval(0.08))
     }
@@ -48,26 +49,20 @@ class HapticMetronome {
     
     // Haptic and Audio Events
     private var hapticClickEvent: CHHapticEvent {
-        CHHapticEvent(eventType: .hapticTransient, parameters: [
-            CHHapticEventParameter(parameterID: .hapticSharpness, value: self.sharpness),
-            CHHapticEventParameter(parameterID: .hapticIntensity, value: self.intensity),
-        ], relativeTime: 0)
+        CHHapticEvent(eventType: .hapticTransient, parameters: [sharpness, intensity], relativeTime: 0)
     }
     private var hapticVibrationShortEvent: CHHapticEvent {
-        CHHapticEvent(eventType: .hapticContinuous, parameters: [
-            CHHapticEventParameter(parameterID: .hapticSharpness, value: self.sharpness),
-            CHHapticEventParameter(parameterID: .hapticIntensity, value: self.intensity),
-        ], relativeTime: 0, duration: self.hapticDurationShort)
+        CHHapticEvent(eventType: .hapticContinuous, parameters: [sharpness, intensity], relativeTime: 0, duration: self.hapticDurationShort)
     }
     private var hapticVibrationLongEvent: CHHapticEvent {
-        CHHapticEvent(eventType: .hapticContinuous, parameters: [
-            CHHapticEventParameter(parameterID: .hapticSharpness, value: self.sharpness),
-            CHHapticEventParameter(parameterID: .hapticIntensity, value: self.intensity),
-        ], relativeTime: 0, duration: self.hapticDurationLong)
+        CHHapticEvent(eventType: .hapticContinuous, parameters: [sharpness, intensity], relativeTime: 0, duration: self.hapticDurationLong)
     }
     private var audioEvent: CHHapticEvent {
         CHHapticEvent(audioResourceID: audioResorceId, parameters: [ CHHapticEventParameter(parameterID: .audioVolume, value: self.audioVolume)], relativeTime: 0, duration: self.audioDuration)
     }
+    
+    // Save the start time temporarily
+    private var startTime: TimeInterval = 0
     
     
     init(){
@@ -182,10 +177,22 @@ class HapticMetronome {
             // Create and start player
             player = try engine.makeAdvancedPlayer(with: pattern)
             player!.loopEnabled = true
-            player!.completionHandler = { _ in
-                print("end")
+            
+            var atTime: TimeInterval = CHHapticTimeImmediate
+            if startTime != 0 {
+                let currentTime: TimeInterval = self.engine.currentTime
+                let passedTime: TimeInterval = (currentTime - self.startTime).truncatingRemainder(dividingBy: 60.0 / self.old_bpm)
+                let pausingTime: TimeInterval = (60.0 / self.bpm) - passedTime
+                print("pausingTime")
+                print(pausingTime)
+                if pausingTime > 0 {
+                    atTime = pausingTime + currentTime
+                }
             }
-            try player!.start(atTime: CHHapticTimeImmediate)
+            
+            startTime = self.engine.currentTime
+            try player!.start(atTime: atTime)
+            
         } catch let error {
             print("Haptic Playback Error: \(error)")
         }
@@ -195,6 +202,7 @@ class HapticMetronome {
         guard supportsHaptics else { return }
         engine.stop()
         engineNeedsStart = true
+        startTime = 0
         print("engine stopped normally")
     }
 }

@@ -39,6 +39,7 @@ struct ContentView: View {
             .pickerStyle(SegmentedPickerStyle())
             
             Button(action: {
+                hapticMetronome.old_bpm = hapticMetronome.bpm
                 hapticMetronome.bpm = Double(self.bpm)
                 hapticMetronome.modeClick = self.click
                 hapticMetronome.modeVibration = self.vibration
