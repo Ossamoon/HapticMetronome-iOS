@@ -182,6 +182,9 @@ class HapticMetronome {
             // Create and start player
             player = try engine.makeAdvancedPlayer(with: pattern)
             player!.loopEnabled = true
+            player!.completionHandler = { _ in
+                print("end")
+            }
             try player!.start(atTime: CHHapticTimeImmediate)
         } catch let error {
             print("Haptic Playback Error: \(error)")
