@@ -7,17 +7,6 @@
 
 import SwiftUI
 
-enum HapticMode: String, CaseIterable, Identifiable {
-    case none
-    case click
-    case vibrationShort
-    case vibrationLong
-    case clickAndVibrationShort
-    case clickAndVibrationLong
-    
-    var id: String {self.rawValue}
-}
-
 struct ContentView: View {
     
     var hapticMetronome: HapticMetronome = HapticMetronome()
@@ -44,9 +33,25 @@ struct ContentView: View {
             }) {
                 Text("Play")
             }
+            Button(action: {
+                hapticMetronome.stop()
+            }) {
+                Text("Stop")
+            }
             .padding()
         }
     }
+}
+
+enum HapticMode: String, CaseIterable, Identifiable {
+    case none
+    case click
+    case vibrationShort
+    case vibrationLong
+    case clickAndVibrationShort
+    case clickAndVibrationLong
+    
+    var id: String {self.rawValue}
 }
 
 struct ContentView_Previews: PreviewProvider {
