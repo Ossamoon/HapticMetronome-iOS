@@ -11,7 +11,8 @@ import AVFoundation
 
 class HapticMetronome {
     // Metronome Parameter
-    var mode: HapticMode = .none
+    var modeClick: Click = .off
+    var modeVibration: Vibrasion = .off
     var bpm: Double = 120.0
     
     // Audio Session
@@ -162,20 +163,18 @@ class HapticMetronome {
             audioResorceId = try engine.registerAudioResource(audioURL!)
             var eventList: [CHHapticEvent] = []
             eventList.append(audioEvent)
-            switch self.mode {
-            case .click:
+            switch self.modeClick {
+            case .on:
                 eventList.append(hapticClickEvent)
-            case .vibrationShort:
+            case .off:
+                break
+            }
+            switch self.modeVibration {
+            case .short:
                 eventList.append(hapticVibrationShortEvent)
-            case .vibrationLong:
+            case .long:
                 eventList.append(hapticVibrationLongEvent)
-            case .clickAndVibrationShort:
-                eventList.append(hapticClickEvent)
-                eventList.append(hapticVibrationShortEvent)
-            case .clickAndVibrationLong:
-                eventList.append(hapticClickEvent)
-                eventList.append(hapticVibrationLongEvent)
-            case .none:
+            case .off:
                 break
             }
             let pattern = try CHHapticPattern(events: eventList, parameters: [])
