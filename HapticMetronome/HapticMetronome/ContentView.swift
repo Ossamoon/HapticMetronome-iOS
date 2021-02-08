@@ -15,8 +15,7 @@ struct ContentView: View {
         Int(bpm_str)!
     }
     @State private var bpm_str: String = "120"
-    @State private var click: Click = .off
-    @State private var vibration: Vibrasion = .off
+    @State private var hapticMode: HapticMode = .off
     
     
     var body: some View {
@@ -24,15 +23,8 @@ struct ContentView: View {
             TextField("BPM", text: $bpm_str)
                 .padding()
             
-            Picker(selection: $click, label: Text("Click")) {
-                ForEach(Click.allCases) {
-                    Text($0.rawValue.capitalized).tag($0)
-                }
-            }
-            .pickerStyle(SegmentedPickerStyle())
-            
-            Picker(selection: $vibration, label: Text("Vibrasion")) {
-                ForEach(Vibrasion.allCases) {
+            Picker(selection: $hapticMode, label: Text("HapticMode")) {
+                ForEach(HapticMode.allCases) {
                     Text($0.rawValue.capitalized).tag($0)
                 }
             }
@@ -41,8 +33,7 @@ struct ContentView: View {
             Button(action: {
                 hapticMetronome.old_bpm = hapticMetronome.bpm
                 hapticMetronome.bpm = Double(self.bpm)
-                hapticMetronome.modeClick = self.click
-                hapticMetronome.modeVibration = self.vibration
+                hapticMetronome.hapticMode = self.hapticMode
                 hapticMetronome.play()
             }) {
                 Text("Play")
@@ -59,17 +50,11 @@ struct ContentView: View {
     }
 }
 
-enum Click: String, CaseIterable, Identifiable {
+enum HapticMode: String, CaseIterable, Identifiable {
     case off
-    case on
-    
-    var id: String {self.rawValue}
-}
-
-enum Vibrasion: String, CaseIterable, Identifiable {
-    case off
-    case short
-    case long
+    case click
+    case vibrationShort
+    case vibrationLong
     
     var id: String {self.rawValue}
 }

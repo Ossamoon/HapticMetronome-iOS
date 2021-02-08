@@ -11,20 +11,36 @@ import AVFoundation
 
 class HapticMetronome {
     // Metronome Parameter
-    var modeClick: Click = .off
-    var modeVibration: Vibrasion = .off
+    var hapticMode: HapticMode = .off
     var bpm: Double = 120.0
     var old_bpm: Double = 120.0
+    var beats: Int = 4
+    var taplet: Int = 2
     
     // Audio Session
     var audioSession: AVAudioSession
     
     // Audio Data
-    private var audioURL: URL?
-    private var audioResorceId: CHHapticAudioResourceID = 0
+    private let audioResorceNames: [AudioType: String]  = [
+        .middle : "sound_default_middle",
+        .strong : "sound_default_strong",
+        .weak : "sound_default_weak",
+    ]
+    private var audioURLs: [AudioType: URL?] = [
+        .middle : nil,
+        .strong : nil,
+        .weak : nil,
+    ]
+    private var audioResorceIDs: [AudioType: CHHapticAudioResourceID] = [
+        .middle : 0,
+        .strong : 1,
+        .weak : 2,
+    ]
     
-    // Haptic Engine & State:
+    // Haptic Engine:
     private var engine: CHHapticEngine!
+    
+    // Haptic State:
     private var engineNeedsStart = true
     var supportsHaptics: Bool = false
     
@@ -35,33 +51,25 @@ class HapticMetronome {
     private let sharpness = CHHapticEventParameter(parameterID: .hapticSharpness, value: 0.4)
     private let intensity = CHHapticEventParameter(parameterID: .hapticIntensity, value: 1.0)
     private var hapticDurationShort: TimeInterval {
-        min(audioDuration, TimeInterval(0.08))
+        min(audioDurationStrong, TimeInterval(0.08))
     }
     private var hapticDurationLong: TimeInterval {
-        min(audioDuration, TimeInterval(0.18))
+        min(audioDurationStrong, TimeInterval(0.18))
     }
     
     // Audio Event Parameters:
-    private let audioVolume: Float = 1.0
-    private var audioDuration: TimeInterval {
+    private let audioVolume = CHHapticEventParameter(parameterID: .audioVolume, value: 1.0)
+    private var audioDurationMiddle: TimeInterval {
         TimeInterval(60.0 / bpm)
     }
-    
-    // Haptic and Audio Events
-    private var hapticClickEvent: CHHapticEvent {
-        CHHapticEvent(eventType: .hapticTransient, parameters: [sharpness, intensity], relativeTime: 0)
+    private var audioDurationStrong: TimeInterval {
+        TimeInterval(Double(beats) * 60.0 / bpm)
     }
-    private var hapticVibrationShortEvent: CHHapticEvent {
-        CHHapticEvent(eventType: .hapticContinuous, parameters: [sharpness, intensity], relativeTime: 0, duration: self.hapticDurationShort)
-    }
-    private var hapticVibrationLongEvent: CHHapticEvent {
-        CHHapticEvent(eventType: .hapticContinuous, parameters: [sharpness, intensity], relativeTime: 0, duration: self.hapticDurationLong)
-    }
-    private var audioEvent: CHHapticEvent {
-        CHHapticEvent(audioResourceID: audioResorceId, parameters: [ CHHapticEventParameter(parameterID: .audioVolume, value: self.audioVolume)], relativeTime: 0, duration: self.audioDuration)
+    private var audioDurationWeak: TimeInterval {
+        TimeInterval(60.0 / bpm / Double(taplet))
     }
     
-    // Save the start time temporarily
+    // Time when the engine started player most recently:
     private var startTime: TimeInterval = 0
     
     
@@ -77,10 +85,12 @@ class HapticMetronome {
         let hapticCapability = CHHapticEngine.capabilitiesForHardware()
         supportsHaptics = hapticCapability.supportsHaptics
         
-        if let path = Bundle.main.path(forResource: "sound1", ofType: "aif") {
-            audioURL = URL(fileURLWithPath: path)
-        } else {
-            print("Error: Failed to find audioURL")
+        for type in AudioType.allCases {
+            if let path = Bundle.main.path(forResource: audioResorceNames[type], ofType: "wav") {
+                audioURLs[type] = URL(fileURLWithPath: path)
+            } else {
+                print("Error: Failed to find audioURL_\(type)")
+            }
         }
         
         createAndStartHapticEngine()
@@ -155,32 +165,16 @@ class HapticMetronome {
             }
             
             // Create haptic pattern
-            audioResorceId = try engine.registerAudioResource(audioURL!)
-            var eventList: [CHHapticEvent] = []
-            eventList.append(audioEvent)
-            switch self.modeClick {
-            case .on:
-                eventList.append(hapticClickEvent)
-            case .off:
-                break
-            }
-            switch self.modeVibration {
-            case .short:
-                eventList.append(hapticVibrationShortEvent)
-            case .long:
-                eventList.append(hapticVibrationLongEvent)
-            case .off:
-                break
-            }
-            let pattern = try CHHapticPattern(events: eventList, parameters: [])
+            let pattern = try createPattern()
             
-            // Create and start player
+            // Create player
             player = try engine.makeAdvancedPlayer(with: pattern)
             player!.loopEnabled = true
             
+            // Culculate when to start player
             var atTime: TimeInterval = CHHapticTimeImmediate
+            let currentTime: TimeInterval = self.engine.currentTime
             if startTime != 0 {
-                let currentTime: TimeInterval = self.engine.currentTime
                 let passedTime: TimeInterval = (currentTime - self.startTime).truncatingRemainder(dividingBy: 60.0 / self.old_bpm)
                 let pausingTime: TimeInterval = (60.0 / self.bpm) - passedTime
                 print("pausingTime")
@@ -190,7 +184,8 @@ class HapticMetronome {
                 }
             }
             
-            startTime = self.engine.currentTime
+            // Start player
+            startTime = max(atTime, currentTime)
             try player!.start(atTime: atTime)
             
         } catch let error {
@@ -204,5 +199,93 @@ class HapticMetronome {
         engineNeedsStart = true
         startTime = 0
         print("engine stopped normally")
+    }
+    
+    private func createPattern() throws -> CHHapticPattern {
+        do {
+            var eventList: [CHHapticEvent] = []
+            
+            // Register audio resources
+            for type in AudioType.allCases {
+                audioResorceIDs[type] = try self.engine.registerAudioResource(audioURLs[type]!!)
+            }
+            
+            // Add events to eventList
+            for i in 0..<self.beats {
+                let timepoint: TimeInterval = Double(i) * audioDurationMiddle
+                if i == 0 && self.beats > 1 {
+                    eventList.append(createAudioEvent(type: .strong, relativeTime: timepoint))
+                } else {
+                    eventList.append(createAudioEvent(type: .middle, relativeTime: timepoint))
+                }
+                if self.hapticMode != .off {
+                    eventList.append(createHapticEvent(type: .click, relativeTime: timepoint))
+                }
+                if self.hapticMode == .vibrationLong {
+                    eventList.append(createHapticEvent(type: .vibrationLong, relativeTime: timepoint))
+                }
+                if self.hapticMode == .vibrationShort {
+                    eventList.append(createHapticEvent(type: .vibrationShort, relativeTime: timepoint))
+                }
+                
+                for j in 0..<self.taplet {
+                    let new_timepoint: TimeInterval = timepoint + Double(j) * audioDurationWeak
+                    eventList.append(createAudioEvent(type: .weak, relativeTime: new_timepoint))
+                }
+            }
+            
+            // Create and Return the pattern
+            let pattern = try CHHapticPattern(events: eventList, parameters: [])
+            return pattern
+            
+        } catch let error {
+            throw error
+        }
+    }
+    
+    
+    private func createHapticEvent(type: HapticType, relativeTime: TimeInterval) -> CHHapticEvent {
+        var event: CHHapticEvent
+        
+        switch type {
+        case .click:
+            event = CHHapticEvent(eventType: .hapticTransient, parameters: [sharpness, intensity], relativeTime: relativeTime)
+        case .vibrationShort:
+            event = CHHapticEvent(eventType: .hapticContinuous, parameters: [sharpness, intensity], relativeTime: relativeTime, duration: self.hapticDurationShort)
+        case .vibrationLong:
+            event = CHHapticEvent(eventType: .hapticContinuous, parameters: [sharpness, intensity], relativeTime: relativeTime, duration: self.hapticDurationLong)
+        }
+        
+        return event
+    }
+    
+    
+    private func createAudioEvent(type: AudioType, relativeTime: TimeInterval) -> CHHapticEvent {
+        var event: CHHapticEvent
+        
+        switch type {
+        case .middle:
+            event = CHHapticEvent(audioResourceID: audioResorceIDs[.middle]!, parameters: [audioVolume], relativeTime: relativeTime, duration: self.audioDurationMiddle)
+        case .strong:
+            event = CHHapticEvent(audioResourceID: audioResorceIDs[.strong]!, parameters: [audioVolume], relativeTime: relativeTime, duration: self.audioDurationStrong)
+        case .weak:
+            event = CHHapticEvent(audioResourceID: audioResorceIDs[.weak]!, parameters: [audioVolume], relativeTime: relativeTime, duration: self.audioDurationWeak)
+        }
+        
+        return event
+    }
+    
+    
+    enum HapticType {
+        case click
+        case vibrationShort
+        case vibrationLong
+    }
+    
+    
+    enum AudioType: CaseIterable {
+        case middle
+        case strong
+        case weak
     }
 }
