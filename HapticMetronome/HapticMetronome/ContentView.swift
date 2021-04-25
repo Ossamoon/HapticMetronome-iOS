@@ -14,13 +14,27 @@ struct ContentView: View {
     private var bpm: Int {
         Int(bpm_str)!
     }
+    private var beats: Int {
+        Int(beats_str)!
+    }
+    private var taplet: Int {
+        Int(taplet_str)!
+    }
     @State private var bpm_str: String = "120"
+    @State private var beats_str: String = "4"
+    @State private var taplet_str: String = "2"
     @State private var hapticMode: HapticMode = .off
     
     
     var body: some View {
         VStack {
             TextField("BPM", text: $bpm_str)
+                .padding()
+            
+            TextField("Beats", text: $beats_str)
+                .padding()
+            
+            TextField("Taplet", text: $taplet_str)
                 .padding()
             
             Picker(selection: $hapticMode, label: Text("HapticMode")) {
@@ -31,9 +45,11 @@ struct ContentView: View {
             .pickerStyle(SegmentedPickerStyle())
             
             Button(action: {
-                hapticMetronome.old_bpm = hapticMetronome.bpm
                 hapticMetronome.bpm = Double(self.bpm)
+                hapticMetronome.beats = self.beats
+                hapticMetronome.taplet = self.taplet
                 hapticMetronome.hapticMode = self.hapticMode
+                hapticMetronome.stop()
                 hapticMetronome.play()
             }) {
                 Text("Play")

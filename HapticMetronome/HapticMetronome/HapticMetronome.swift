@@ -13,7 +13,6 @@ class HapticMetronome {
     // Metronome Parameter
     var hapticMode: HapticMode = .off
     var bpm: Double = 120.0
-    var old_bpm: Double = 120.0
     var beats: Int = 4
     var taplet: Int = 2
     
@@ -171,22 +170,8 @@ class HapticMetronome {
             player = try engine.makeAdvancedPlayer(with: pattern)
             player!.loopEnabled = true
             
-            // Culculate when to start player
-            var atTime: TimeInterval = CHHapticTimeImmediate
-            let currentTime: TimeInterval = self.engine.currentTime
-            if startTime != 0 {
-                let passedTime: TimeInterval = (currentTime - self.startTime).truncatingRemainder(dividingBy: 60.0 / self.old_bpm)
-                let pausingTime: TimeInterval = (60.0 / self.bpm) - passedTime
-                print("pausingTime")
-                print(pausingTime)
-                if pausingTime > 0 {
-                    atTime = pausingTime + currentTime
-                }
-            }
-            
             // Start player
-            startTime = max(atTime, currentTime)
-            try player!.start(atTime: atTime)
+            try player!.start(atTime: CHHapticTimeImmediate)
             
         } catch let error {
             print("Haptic Playback Error: \(error)")
@@ -218,12 +203,15 @@ class HapticMetronome {
                 } else {
                     eventList.append(createAudioEvent(type: .middle, relativeTime: timepoint))
                 }
+                
                 if self.hapticMode != .off {
                     eventList.append(createHapticEvent(type: .click, relativeTime: timepoint))
                 }
+                
                 if self.hapticMode == .vibrationLong {
                     eventList.append(createHapticEvent(type: .vibrationLong, relativeTime: timepoint))
                 }
+                
                 if self.hapticMode == .vibrationShort {
                     eventList.append(createHapticEvent(type: .vibrationShort, relativeTime: timepoint))
                 }
