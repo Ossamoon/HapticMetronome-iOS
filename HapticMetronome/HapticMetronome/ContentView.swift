@@ -24,6 +24,7 @@ struct ContentView: View {
     @State private var beats_str: String = "4"
     @State private var taplet_str: String = "2"
     @State private var hapticMode: HapticMode = .off
+    @State private var isPlaying: Bool = false
     
     
     var body: some View {
@@ -44,24 +45,29 @@ struct ContentView: View {
             }
             .pickerStyle(SegmentedPickerStyle())
             
-            Button(action: {
-                hapticMetronome.bpm = Double(self.bpm)
-                hapticMetronome.beats = self.beats
-                hapticMetronome.taplet = self.taplet
-                hapticMetronome.hapticMode = self.hapticMode
-                hapticMetronome.stop()
-                hapticMetronome.play()
-            }) {
-                Text("Play")
-            }
-            .padding()
             
-            Button(action: {
-                hapticMetronome.stop()
-            }) {
-                Text("Stop")
+            if isPlaying == false {
+                Button(action: {
+                    hapticMetronome.bpm = Double(self.bpm)
+                    hapticMetronome.beats = self.beats
+                    hapticMetronome.taplet = self.taplet
+                    hapticMetronome.hapticMode = self.hapticMode
+                    hapticMetronome.stop()
+                    hapticMetronome.play()
+                    isPlaying = true
+                }) {
+                    Text("Play")
+                }
+                .padding()
+            } else {
+                Button(action: {
+                    hapticMetronome.stop()
+                    isPlaying = false
+                }) {
+                    Text("Stop")
+                }
+                .padding()
             }
-            .padding()
         }
     }
 }
