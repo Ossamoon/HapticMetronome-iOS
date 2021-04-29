@@ -49,19 +49,41 @@ struct ContentView: View {
                 Spacer()
                 Spacer()
                 
-                Button(action: {bpm -= 1}) {
-                    Image(systemName: "minus.square")
+                if isPlaying == false {
+                    Button(action: {
+                            bpm -= 1
+                    }) {
+                        Image(systemName: "minus.square")
+                    }
+                    .font(.title)
+                } else {
+                    Button(action: {}) {
+                        Image(systemName: "minus.square")
+                    }
+                    .font(.title)
+                    .foregroundColor(.gray)
                 }
-                .font(.title)
                 
                 Text(String(bpm))
                     .font(.largeTitle)
+                    .multilineTextAlignment(.center)
                     .frame(width: 100.0)
                 
-                Button(action: {bpm += 1}) {
-                    Image(systemName: "plus.square")
+                if isPlaying == false {
+                    Button(action: {
+                            bpm += 1
+                    }) {
+                        Image(systemName: "plus.square")
+                    }
+                    .font(.title)
+                } else {
+                    Button(action: {}) {
+                        Image(systemName: "plus.square")
+                    }
+                    .font(.title)
+                    .foregroundColor(.gray)
                 }
-                .font(.title)
+                
                 
                 Spacer()
             }
@@ -92,24 +114,40 @@ struct ContentView: View {
             
             
             if isPlaying == false {
-                Button(action: {
-                    hapticMetronome.bpm = Double(self.bpm)
-                    hapticMetronome.beats = self.beats
-                    hapticMetronome.taplet = self.taplet
-                    hapticMetronome.hapticMode = self.hapticMode
-                    hapticMetronome.stop()
-                    hapticMetronome.play()
-                    isPlaying = true
-                }) {
-                    Text("Play")
+                VStack {
+                    Button(action: {
+                        hapticMetronome.bpm = Double(self.bpm)
+                        hapticMetronome.beats = self.beats
+                        hapticMetronome.taplet = self.taplet
+                        hapticMetronome.hapticMode = self.hapticMode
+                        hapticMetronome.play()
+                        isPlaying = true
+                    }) {
+                        Image(systemName: "play.circle")
+                            .resizable()
+                            .frame(width: 80.0, height: 80.0)
+                        
+                    }
+                    
+                    Text("スタート")
+                        .font(.body)
+                        .foregroundColor(Color.gray)
                 }
                 .padding()
             } else {
-                Button(action: {
-                    hapticMetronome.stop()
-                    isPlaying = false
-                }) {
-                    Text("Stop")
+                VStack {
+                    Button(action: {
+                        hapticMetronome.stop()
+                        isPlaying = false
+                    }) {
+                        Image(systemName: "stop.circle")
+                            .resizable()
+                            .frame(width: 80.0, height: 80.0)
+                    }
+                    
+                    Text("ストップ")
+                        .font(.body)
+                        .foregroundColor(Color.gray)
                 }
                 .padding()
             }
