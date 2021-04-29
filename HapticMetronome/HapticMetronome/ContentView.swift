@@ -48,42 +48,27 @@ struct ContentView: View {
                 
                 Spacer()
                 Spacer()
+                Spacer()
                 
-                if isPlaying == false {
-                    Button(action: {
-                            bpm -= 1
-                    }) {
-                        Image(systemName: "minus.square")
-                    }
-                    .font(.title)
-                } else {
-                    Button(action: {}) {
-                        Image(systemName: "minus.square")
-                    }
-                    .font(.title)
-                    .foregroundColor(.gray)
+                Button(action: {
+                        bpm -= 1
+                }) {
+                    Image(systemName: "minus.square")
                 }
+                .font(.largeTitle)
+                .disabled(isPlaying)
                 
                 Text(String(bpm))
-                    .font(.largeTitle)
-                    .multilineTextAlignment(.center)
-                    .frame(width: 100.0)
+                    .font(.system(size: 46, weight: .regular, design: .default))
+                    .frame(width: 90, alignment: .center)
                 
-                if isPlaying == false {
-                    Button(action: {
-                            bpm += 1
-                    }) {
-                        Image(systemName: "plus.square")
-                    }
-                    .font(.title)
-                } else {
-                    Button(action: {}) {
-                        Image(systemName: "plus.square")
-                    }
-                    .font(.title)
-                    .foregroundColor(.gray)
+                Button(action: {
+                        bpm += 1
+                }) {
+                    Image(systemName: "plus.square")
                 }
-                
+                .font(.largeTitle)
+                .disabled(isPlaying)
                 
                 Spacer()
             }
@@ -94,6 +79,7 @@ struct ContentView: View {
                 }
             }
             .pickerStyle(SegmentedPickerStyle())
+            .disabled(isPlaying)
             .padding()
             
             Picker(selection: $tapletMode, label: Text("TapletMode")) {
@@ -102,6 +88,7 @@ struct ContentView: View {
                 }
             }
             .pickerStyle(SegmentedPickerStyle())
+            .disabled(isPlaying)
             .padding()
             
             Picker(selection: $hapticMode, label: Text("HapticMode")) {
@@ -110,6 +97,7 @@ struct ContentView: View {
                 }
             }
             .pickerStyle(SegmentedPickerStyle())
+            .disabled(isPlaying)
             .padding()
             
             
