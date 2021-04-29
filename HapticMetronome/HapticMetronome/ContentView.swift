@@ -11,9 +11,7 @@ struct ContentView: View {
     
     var hapticMetronome: HapticMetronome = HapticMetronome()
     
-    private var bpm: Int {
-        Int(bpm_str)!
-    }
+    @State private var bpm: Int = 120
     private var beats: Int {
         switch beatsMode {
         case .none: return 1
@@ -33,7 +31,6 @@ struct ContentView: View {
         case .tap4: return 4
         }
     }
-    @State private var bpm_str: String = "120"
     @State private var beatsMode: BeatsMode = .beat4
     @State private var tapletMode: TapletMode = .tap2
     @State private var hapticMode: HapticMode = .off
@@ -42,9 +39,32 @@ struct ContentView: View {
     
     var body: some View {
         VStack {
-            TextField("BPM", text: $bpm_str)
-                .keyboardType(.numberPad)
-                .padding()
+            HStack {
+                Spacer()
+                
+                Text("BPM")
+                    .font(.title)
+                    .padding()
+                
+                Spacer()
+                Spacer()
+                
+                Button(action: {bpm -= 1}) {
+                    Image(systemName: "minus.square")
+                }
+                .font(.title)
+                
+                Text(String(bpm))
+                    .font(.largeTitle)
+                    .frame(width: 100.0)
+                
+                Button(action: {bpm += 1}) {
+                    Image(systemName: "plus.square")
+                }
+                .font(.title)
+                
+                Spacer()
+            }
             
             Picker(selection: $beatsMode, label: Text("BeatsMode")) {
                 ForEach(BeatsMode.allCases) {
@@ -52,6 +72,7 @@ struct ContentView: View {
                 }
             }
             .pickerStyle(SegmentedPickerStyle())
+            .padding()
             
             Picker(selection: $tapletMode, label: Text("TapletMode")) {
                 ForEach(TapletMode.allCases) {
@@ -59,6 +80,7 @@ struct ContentView: View {
                 }
             }
             .pickerStyle(SegmentedPickerStyle())
+            .padding()
             
             Picker(selection: $hapticMode, label: Text("HapticMode")) {
                 ForEach(HapticMode.allCases) {
@@ -66,6 +88,7 @@ struct ContentView: View {
                 }
             }
             .pickerStyle(SegmentedPickerStyle())
+            .padding()
             
             
             if isPlaying == false {
@@ -116,10 +139,10 @@ enum TapletMode: String, CaseIterable, Identifiable {
 }
 
 enum HapticMode: String, CaseIterable, Identifiable {
-    case off
-    case click
-    case vibrationShort
-    case vibrationLong
+    case off = "なし"
+    case click = "クリック"
+    case vibrationShort = "バイブ(短)"
+    case vibrationLong = "バイブ(長)"
     
     var id: String { rawValue }
 }
