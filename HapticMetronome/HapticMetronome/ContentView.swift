@@ -11,7 +11,7 @@ struct ContentView: View {
     
     var hapticMetronome: HapticMetronome = HapticMetronome()
     
-    @State private var bpm: Int = 120
+    @State private var bpm: Int = 200
     private var beats: Int {
         switch beatsMode {
         case .none: return 1
@@ -36,43 +36,11 @@ struct ContentView: View {
     @State private var hapticMode: HapticMode = .off
     @State private var isPlaying: Bool = false
     
+    @State private var timer: Timer!
+    @State var isLongPressing = false
     
     var body: some View {
         VStack {
-            HStack {
-                Spacer()
-                
-                Text("BPM")
-                    .font(.title)
-                    .padding()
-                
-                Spacer()
-                Spacer()
-                Spacer()
-                
-                Button(action: {
-                        bpm -= 1
-                }) {
-                    Image(systemName: "minus.square")
-                }
-                .font(.largeTitle)
-                .disabled(isPlaying)
-                
-                Text(String(bpm))
-                    .font(.system(size: 46, weight: .regular, design: .default))
-                    .frame(width: 90, alignment: .center)
-                
-                Button(action: {
-                        bpm += 1
-                }) {
-                    Image(systemName: "plus.square")
-                }
-                .font(.largeTitle)
-                .disabled(isPlaying)
-                
-                Spacer()
-            }
-            
             Picker(selection: $beatsMode, label: Text("BeatsMode")) {
                 ForEach(BeatsMode.allCases) {
                     Text($0.rawValue).tag($0)
@@ -100,6 +68,70 @@ struct ContentView: View {
             .disabled(isPlaying)
             .padding()
             
+            Text("BPM")
+                .font(.body)
+            
+            HStack {
+                Spacer()
+                
+                Button(action: {
+                    if(self.isLongPressing){
+                        //this tap was caused by the end of a longpress gesture, so stop our fastforwarding
+                        self.isLongPressing.toggle()
+                        self.timer?.invalidate()
+                        
+                    } else {
+                        //just a regular tap
+                        self.bpm -= 1
+                    }
+                }, label: {
+                    Image(systemName: "minus.square")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 36.0, height: 36.0)
+                })
+                .simultaneousGesture(
+                    LongPressGesture(minimumDuration: 0.2).onEnded { _ in
+                        self.isLongPressing = true
+                        self.timer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true, block: { _ in
+                            self.bpm -= 1
+                    })
+                })
+                .disabled(isPlaying)
+                
+                Spacer()
+                
+                Text(String(bpm))
+                    .font(.system(size: 64, weight: .regular, design: .default))
+                    .frame(width: 144, alignment: .center)
+                
+                Spacer()
+                
+                Button(action: {
+                    if(self.isLongPressing){
+                        self.isLongPressing.toggle()
+                        self.timer?.invalidate()
+                        
+                    } else {
+                        self.bpm += 1
+                    }
+                }, label: {
+                    Image(systemName: "plus.square")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 36.0, height: 36.0)
+                })
+                .simultaneousGesture(
+                    LongPressGesture(minimumDuration: 0.2).onEnded { _ in
+                        self.isLongPressing = true
+                        self.timer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true, block: { _ in
+                            self.bpm += 1
+                    })
+                })
+                .disabled(isPlaying)
+                
+                Spacer()
+            }
             
             if isPlaying == false {
                 VStack {
