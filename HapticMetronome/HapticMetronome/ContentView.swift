@@ -39,8 +39,31 @@ struct ContentView: View {
     @State private var timer: Timer!
     @State var isLongPressing = false
     
+    @State var angle: Angle = Angle(degrees: 120.0)
+    
     var body: some View {
         VStack {
+            GeometryReader { geometry in
+                HStack(spacing: 0) {
+                    HStack {
+                        Spacer()
+                        VStack {
+                            Spacer()
+                            Capsule()
+                                .frame(width: 200.0, height: 10.0)
+                                .foregroundColor(.orange)
+                                .rotationEffect(angle, anchor: .trailing)
+                        }
+                    }
+                    .frame(width: geometry.size.width / 2, height: 200)
+                    .background(Color.clear)
+                    
+                    Rectangle()
+                        .frame(width: geometry.size.width / 2, height: 200)
+                        .foregroundColor(.clear)
+                }
+            }.frame(height: 200)
+            
             Picker(selection: $beatsMode, label: Text("BeatsMode")) {
                 ForEach(BeatsMode.allCases) {
                     Text($0.rawValue).tag($0)
@@ -68,10 +91,7 @@ struct ContentView: View {
             .disabled(isPlaying)
             .padding()
             
-            Text("BPM")
-                .font(.body)
-            
-            HStack {
+            HStack(alignment: .center) {
                 Spacer()
                 
                 Button(action: {
@@ -79,7 +99,6 @@ struct ContentView: View {
                         //this tap was caused by the end of a longpress gesture, so stop our fastforwarding
                         self.isLongPressing.toggle()
                         self.timer?.invalidate()
-                        
                     } else {
                         //just a regular tap
                         self.bpm -= 1
@@ -93,7 +112,7 @@ struct ContentView: View {
                 .simultaneousGesture(
                     LongPressGesture(minimumDuration: 0.2).onEnded { _ in
                         self.isLongPressing = true
-                        self.timer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true, block: { _ in
+                        self.timer = Timer.scheduledTimer(withTimeInterval: 0.06, repeats: true, block: { _ in
                             self.bpm -= 1
                     })
                 })
@@ -101,9 +120,13 @@ struct ContentView: View {
                 
                 Spacer()
                 
-                Text(String(bpm))
-                    .font(.system(size: 64, weight: .regular, design: .default))
-                    .frame(width: 144, alignment: .center)
+                VStack(spacing: 0) {
+                    Text("BPM")
+                        .font(.body)
+                    
+                    Text(String(bpm))
+                        .font(.system(size: 68, weight: .regular, design: .default))
+                }
                 
                 Spacer()
                 
@@ -111,7 +134,6 @@ struct ContentView: View {
                     if(self.isLongPressing){
                         self.isLongPressing.toggle()
                         self.timer?.invalidate()
-                        
                     } else {
                         self.bpm += 1
                     }
@@ -124,7 +146,7 @@ struct ContentView: View {
                 .simultaneousGesture(
                     LongPressGesture(minimumDuration: 0.2).onEnded { _ in
                         self.isLongPressing = true
-                        self.timer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true, block: { _ in
+                        self.timer = Timer.scheduledTimer(withTimeInterval: 0.06, repeats: true, block: { _ in
                             self.bpm += 1
                     })
                 })
