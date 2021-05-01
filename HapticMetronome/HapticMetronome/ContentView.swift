@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ContentView: View {
     
-    @ObservedObject var hapticMetronome: HapticMetronome = HapticMetronome()
+    @ObservedObject private var hapticMetronome: HapticMetronome = HapticMetronome()
     
     @State private var bpm: Int = 200
     private var beats: Int {
@@ -37,7 +37,7 @@ struct ContentView: View {
     @State private var isPlaying: Bool = false
     
     @State private var timer: Timer!
-    @State var isLongPressing = false
+    @State private var isLongPressing = false
     
     private var angle: Angle {
         if hapticMetronome.isComingBack {
@@ -102,61 +102,84 @@ struct ContentView: View {
                 Spacer()
                 
                 Button(action: {
-                    if(self.isLongPressing){
-                        //this tap was caused by the end of a longpress gesture, so stop our fastforwarding
-                        self.isLongPressing.toggle()
-                        self.timer?.invalidate()
-                    } else {
-                        //just a regular tap
-                        self.bpm -= 1
+                    self.bpm = max(self.bpm / 2, 12)
+                }) {
+                    HStack(spacing: 0) {
+                        Image(systemName: "divide")
+                        Text("2")
                     }
-                }, label: {
-                    Image(systemName: "minus.square")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 40.0, height: 40.0)
-                })
-                .simultaneousGesture(
-                    LongPressGesture(minimumDuration: 0.2).onEnded { _ in
-                        self.isLongPressing = true
-                        self.timer = Timer.scheduledTimer(withTimeInterval: 0.06, repeats: true, block: { _ in
-                            self.bpm -= 1
-                    })
-                })
+                }
                 .disabled(isPlaying)
                 
                 Spacer()
                 
-                VStack(spacing: 0) {
-                    Text("BPM")
-                        .font(.body)
+                HStack(spacing: 20) {
+                    Button(action: {
+                        if(self.isLongPressing){
+                            //this tap was caused by the end of a longpress gesture, so stop our fastforwarding
+                            self.isLongPressing.toggle()
+                            self.timer?.invalidate()
+                        } else {
+                            //just a regular tap
+                            if self.bpm > 12 { self.bpm -= 1 }
+                        }
+                    }, label: {
+                        Image(systemName: "minus.square")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 40.0, height: 40.0)
+                    })
+                    .simultaneousGesture(
+                        LongPressGesture(minimumDuration: 0.2).onEnded { _ in
+                            self.isLongPressing = true
+                            self.timer = Timer.scheduledTimer(withTimeInterval: 0.06, repeats: true, block: { _ in
+                                if self.bpm > 12 { self.bpm -= 1 }
+                        })
+                    })
+                    .disabled(isPlaying)
                     
-                    Text(String(bpm))
-                        .font(.system(size: 68, weight: .regular, design: .default))
+                    VStack(spacing: 0) {
+                        Text("BPM")
+                            .font(.body)
+                        
+                        Text(String(bpm))
+                            .font(.system(size: 68, weight: .regular, design: .default))
+                    }
+                    .frame(width: 128.0)
+                    
+                    Button(action: {
+                        if(self.isLongPressing){
+                            self.isLongPressing.toggle()
+                            self.timer?.invalidate()
+                        } else {
+                            if self.bpm < 280 { self.bpm += 1 }
+                        }
+                    }, label: {
+                        Image(systemName: "plus.square")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 40.0, height: 40.0)
+                    })
+                    .simultaneousGesture(
+                        LongPressGesture(minimumDuration: 0.2).onEnded { _ in
+                            self.isLongPressing = true
+                            self.timer = Timer.scheduledTimer(withTimeInterval: 0.06, repeats: true, block: { _ in
+                                if self.bpm < 280 { self.bpm += 1 }
+                        })
+                    })
+                    .disabled(isPlaying)
                 }
                 
                 Spacer()
                 
                 Button(action: {
-                    if(self.isLongPressing){
-                        self.isLongPressing.toggle()
-                        self.timer?.invalidate()
-                    } else {
-                        self.bpm += 1
+                    self.bpm = min(self.bpm * 2, 280)
+                }) {
+                    HStack(spacing: 0) {
+                        Image(systemName: "multiply")
+                        Text("2")
                     }
-                }, label: {
-                    Image(systemName: "plus.square")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 40.0, height: 40.0)
-                })
-                .simultaneousGesture(
-                    LongPressGesture(minimumDuration: 0.2).onEnded { _ in
-                        self.isLongPressing = true
-                        self.timer = Timer.scheduledTimer(withTimeInterval: 0.06, repeats: true, block: { _ in
-                            self.bpm += 1
-                    })
-                })
+                }
                 .disabled(isPlaying)
                 
                 Spacer()
