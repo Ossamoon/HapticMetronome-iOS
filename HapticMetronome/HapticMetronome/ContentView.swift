@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ContentView: View {
     
-    var hapticMetronome: HapticMetronome = HapticMetronome()
+    @ObservedObject var hapticMetronome: HapticMetronome = HapticMetronome()
     
     @State private var bpm: Int = 200
     private var beats: Int {
@@ -39,9 +39,16 @@ struct ContentView: View {
     @State private var timer: Timer!
     @State var isLongPressing = false
     
-    @State var angle: Angle = Angle(degrees: 120.0)
+    private var angle: Angle {
+        if hapticMetronome.isComingBack {
+            return Angle(degrees: 150.0 - 120.0 * hapticMetronome.rateInBeat)
+        } else {
+            return Angle(degrees: 30.0 + 120.0 * hapticMetronome.rateInBeat)
+        }
+    }
     
     var body: some View {
+        
         VStack {
             GeometryReader { geometry in
                 HStack(spacing: 0) {
@@ -52,13 +59,13 @@ struct ContentView: View {
                             Capsule()
                                 .frame(width: 200.0, height: 10.0)
                                 .foregroundColor(.orange)
-                                .rotationEffect(angle, anchor: .trailing)
+                                .rotationEffect(self.angle, anchor: .trailing)
                         }
                     }
                     .frame(width: geometry.size.width / 2, height: 200)
                     .background(Color.clear)
                     
-                    Rectangle()
+                    HStack { }
                         .frame(width: geometry.size.width / 2, height: 200)
                         .foregroundColor(.clear)
                 }
@@ -91,7 +98,7 @@ struct ContentView: View {
             .disabled(isPlaying)
             .padding()
             
-            HStack(alignment: .center) {
+            HStack {
                 Spacer()
                 
                 Button(action: {
@@ -107,7 +114,7 @@ struct ContentView: View {
                     Image(systemName: "minus.square")
                         .resizable()
                         .scaledToFit()
-                        .frame(width: 36.0, height: 36.0)
+                        .frame(width: 40.0, height: 40.0)
                 })
                 .simultaneousGesture(
                     LongPressGesture(minimumDuration: 0.2).onEnded { _ in
@@ -141,7 +148,7 @@ struct ContentView: View {
                     Image(systemName: "plus.square")
                         .resizable()
                         .scaledToFit()
-                        .frame(width: 36.0, height: 36.0)
+                        .frame(width: 40.0, height: 40.0)
                 })
                 .simultaneousGesture(
                     LongPressGesture(minimumDuration: 0.2).onEnded { _ in

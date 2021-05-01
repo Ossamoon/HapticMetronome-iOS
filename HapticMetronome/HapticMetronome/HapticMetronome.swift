@@ -9,7 +9,7 @@ import Foundation
 import CoreHaptics
 import AVFoundation
 
-class HapticMetronome {
+class HapticMetronome: ObservableObject {
     // Metronome Parameter
     var hapticMode: HapticMode = .off
     var bpm: Double = 120.0
@@ -17,7 +17,7 @@ class HapticMetronome {
     var taplet: Int = 2
     
     // Audio Session
-    var audioSession: AVAudioSession
+    private var audioSession: AVAudioSession
     
     // Audio Data
     private let audioResorceNames: [AudioType: String]  = [
@@ -68,8 +68,12 @@ class HapticMetronome {
         TimeInterval(60.0 / bpm / Double(taplet))
     }
     
-    // Time when the engine started player most recently:
-    private var startTime: TimeInterval = 0
+    // Animation Parameter
+    @Published var rateInBeat: Double = 0
+    @Published var isComingBack = false
+    
+    // Timer for Animation
+    private var timer: Timer!
     
     
     init(){
@@ -130,6 +134,8 @@ class HapticMetronome {
             
             // Indicate that the next time the app requires a haptic, the app must call engine.start().
             self.engineNeedsStart = true
+            
+            self.timer?.invalidate()
         }
         
         // The reset handler notifies the app that it must reload all its content.
@@ -173,6 +179,22 @@ class HapticMetronome {
             // Start player
             try player!.start(atTime: CHHapticTimeImmediate)
             
+            // Start timer for animation
+            self.timer?.invalidate()
+            var previousTime = self.engine.currentTime
+            self.isComingBack = false
+            self.rateInBeat = 0
+            self.timer = Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true, block: { _ in
+                let currentTime: TimeInterval = self.engine.currentTime
+                let deltaTime: TimeInterval = currentTime - previousTime
+                self.rateInBeat += deltaTime / (60.0 / self.bpm)
+                if self.rateInBeat > 1 {
+                    self.rateInBeat -= 1.0
+                    self.isComingBack.toggle()
+                }
+                previousTime = currentTime
+            })
+            
         } catch let error {
             print("Haptic Playback Error: \(error)")
         }
@@ -180,9 +202,11 @@ class HapticMetronome {
     
     func stop(){
         guard supportsHaptics else { return }
+        self.timer?.invalidate()
+        self.isComingBack = false
+        self.rateInBeat = 0
         engine.stop()
         engineNeedsStart = true
-        startTime = 0
         print("engine stopped normally")
     }
     
