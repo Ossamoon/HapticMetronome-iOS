@@ -101,7 +101,10 @@ class HapticMetronome: ObservableObject {
     
     private func createAndStartHapticEngine() {
         // Check for device compatibility
-        guard supportsHaptics else { return }
+        guard supportsHaptics else {
+            print("This device does not support Haptics")
+            return
+        }
         
         // Create and configure a haptic engine.
         do {
@@ -160,7 +163,10 @@ class HapticMetronome: ObservableObject {
     
     func play() {
         // Check for device compatibility
-        guard supportsHaptics else { return }
+        guard supportsHaptics else {
+            print("This device does not support Haptics")
+            return
+        }
         
         do {
             // Check for engine state
@@ -201,7 +207,11 @@ class HapticMetronome: ObservableObject {
     }
     
     func stop(){
-        guard supportsHaptics else { return }
+        guard supportsHaptics else {
+            print("This device does not support Haptics")
+            return
+        }
+        
         self.timer?.invalidate()
         self.isComingBack = false
         self.rateInBeat = 0

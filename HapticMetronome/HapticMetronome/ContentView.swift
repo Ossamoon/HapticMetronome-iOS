@@ -21,6 +21,7 @@ struct ContentView: View {
         case .beat5: return 5
         case .beat6: return 6
         case .beat7: return 7
+        case .beat8: return 8
         }
     }
     private var taplet: Int {
@@ -235,6 +236,7 @@ enum BeatsMode: String, CaseIterable, Identifiable {
     case beat5 = "5拍子"
     case beat6 = "6拍子"
     case beat7 = "7拍子"
+    case beat8 = "8拍子"
     
     var id: String { rawValue }
 }
