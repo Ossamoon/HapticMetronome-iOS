@@ -133,12 +133,12 @@ struct ContentView: View {
                         LongPressGesture(minimumDuration: 0.2).onEnded { _ in
                             self.isLongPressing = true
                             self.timer = Timer.scheduledTimer(withTimeInterval: 0.06, repeats: true, block: { _ in
-                                if self.bpm > 12 { self.bpm -= 1 }
+                                self.bpm -= 1
                         })
                     })
                     .disabled(isPlaying)
                     
-                    VStack(spacing: 0) {
+                    VStack {
                         Text("BPM")
                             .font(.body)
                         
