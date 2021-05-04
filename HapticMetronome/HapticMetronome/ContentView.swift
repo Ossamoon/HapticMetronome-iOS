@@ -11,7 +11,7 @@ struct ContentView: View {
     
     @ObservedObject private var hapticMetronome: HapticMetronome = HapticMetronome()
     
-    @State private var bpm: Int = 200
+    @State private var bpm: Int = 120
     private var beats: Int {
         switch beatsMode {
         case .none: return 1
@@ -34,7 +34,7 @@ struct ContentView: View {
     }
     @State private var beatsMode: BeatsMode = .beat4
     @State private var tapletMode: TapletMode = .tap2
-    @State private var hapticMode: HapticMode = .off
+    @State private var hapticMode: HapticMode = .vibrationShort
     @State private var isPlaying: Bool = false
     
     @State private var timer: Timer!
@@ -222,8 +222,7 @@ struct ContentView: View {
             } else {
                 VStack {
                     Button(action: {
-                        hapticMetronome.stop()
-                        isPlaying = false
+                        self.stop()
                     }) {
                         Image(systemName: "stop.circle")
                             .resizable()
@@ -237,6 +236,11 @@ struct ContentView: View {
                 .padding()
             }
         }
+    }
+    
+    func stop() {
+        self.hapticMetronome.stop()
+        self.isPlaying = false
     }
 }
 

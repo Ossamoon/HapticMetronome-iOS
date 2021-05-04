@@ -11,7 +11,7 @@ import AVFoundation
 
 class HapticMetronome: ObservableObject {
     // Metronome Parameter
-    var hapticMode: HapticMode = .off
+    var hapticMode: HapticMode = .vibrationShort
     var bpm: Double = 120.0
     var beats: Int = 4
     var taplet: Int = 2
