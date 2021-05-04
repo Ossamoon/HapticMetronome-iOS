@@ -108,7 +108,13 @@ struct ContentView: View {
                     HStack(spacing: 0) {
                         Image(systemName: "divide")
                         Text("2")
+                            .padding(.trailing, 1.0)
                     }
+                    .padding(.all, 3.0)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 3.0)
+                            .stroke()
+                    )
                 }
                 .disabled(isPlaying)
                 
@@ -179,7 +185,13 @@ struct ContentView: View {
                     HStack(spacing: 0) {
                         Image(systemName: "multiply")
                         Text("2")
+                            .padding(.trailing, 1.0)
                     }
+                    .padding(.all, 3.0)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 3.0)
+                            .stroke()
+                    )
                 }
                 .disabled(isPlaying)
                 
@@ -261,6 +273,13 @@ enum HapticMode: String, CaseIterable, Identifiable {
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
+        Group {
+            ContentView()
+            ContentView()
+                .preferredColorScheme(.dark)
+                .previewDevice("iPhone 8 Plus")
+            ContentView()
+                .previewDevice("iPhone 11 Pro Max")
+        }
     }
 }
