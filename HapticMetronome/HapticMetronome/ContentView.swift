@@ -40,6 +40,8 @@ struct ContentView: View {
     @State private var timer: Timer!
     @State private var isLongPressing = false
     
+    private let screenWidth = UIScreen.main.bounds.width
+    
     private var angle: Angle {
         if hapticMetronome.isComingBack {
             return Angle(degrees: 150.0 - 120.0 * hapticMetronome.rateInBeat)
@@ -51,6 +53,8 @@ struct ContentView: View {
     var body: some View {
         
         VStack {
+            Spacer()
+            
             GeometryReader { geometry in
                 HStack(spacing: 0) {
                     HStack {
@@ -58,46 +62,58 @@ struct ContentView: View {
                         VStack {
                             Spacer()
                             Capsule()
-                                .frame(width: 200.0, height: 10.0)
+                                .frame(width: geometry.size.height, height: 12.0)
                                 .foregroundColor(.orange)
                                 .rotationEffect(self.angle, anchor: .trailing)
                         }
                     }
-                    .frame(width: geometry.size.width / 2, height: 200)
+                    .frame(width: geometry.size.width / 2, height: geometry.size.height)
                     .background(Color.clear)
                     
                     HStack { }
-                        .frame(width: geometry.size.width / 2, height: 200)
+                        .frame(width: geometry.size.width / 2, height: geometry.size.height)
                         .foregroundColor(.clear)
                 }
-            }.frame(height: 200)
-            
-            Picker(selection: $beatsMode, label: Text("BeatsMode")) {
-                ForEach(BeatsMode.allCases) {
-                    Text($0.rawValue).tag($0)
-                }
             }
-            .pickerStyle(SegmentedPickerStyle())
-            .disabled(isPlaying)
-            .padding()
+            .frame(width: screenWidth, height: screenWidth / 2)
             
-            Picker(selection: $tapletMode, label: Text("TapletMode")) {
-                ForEach(TapletMode.allCases) {
-                    Text($0.rawValue).tag($0)
+            Group {
+                Spacer()
+                
+                Picker(selection: $beatsMode, label: Text("BeatsMode")) {
+                    ForEach(BeatsMode.allCases) {
+                        Text($0.rawValue).tag($0)
+                    }
                 }
-            }
-            .pickerStyle(SegmentedPickerStyle())
-            .disabled(isPlaying)
-            .padding()
-            
-            Picker(selection: $hapticMode, label: Text("HapticMode")) {
-                ForEach(HapticMode.allCases) {
-                    Text($0.rawValue).tag($0)
+                .pickerStyle(SegmentedPickerStyle())
+                .disabled(isPlaying)
+                .padding(.horizontal, 8.0)
+                
+                Spacer()
+                
+                Picker(selection: $tapletMode, label: Text("TapletMode")) {
+                    ForEach(TapletMode.allCases) {
+                        Text($0.rawValue).tag($0)
+                    }
                 }
+                .pickerStyle(SegmentedPickerStyle())
+                .disabled(isPlaying)
+                .padding(.horizontal, 8.0)
+                
+                Spacer()
+                
+                Picker(selection: $hapticMode, label: Text("HapticMode")) {
+                    ForEach(HapticMode.allCases) {
+                        Text($0.rawValue).tag($0)
+                    }
+                }
+                .pickerStyle(SegmentedPickerStyle())
+                .disabled(isPlaying)
+                .padding(.horizontal, 8.0)
+                
+                Spacer()
+                Spacer()
             }
-            .pickerStyle(SegmentedPickerStyle())
-            .disabled(isPlaying)
-            .padding()
             
             HStack {
                 Spacer()
@@ -107,10 +123,11 @@ struct ContentView: View {
                 }) {
                     HStack(spacing: 0) {
                         Image(systemName: "divide")
+                            .font(.system(size: 18, weight: .regular, design: .default))
                         Text("2")
-                            .padding(.trailing, 1.0)
+                            .font(.system(size: 22, weight: .regular, design: .default))
                     }
-                    .padding(.all, 3.0)
+                    .frame(width: 42.0, height: 30.0)
                     .overlay(
                         RoundedRectangle(cornerRadius: 3.0)
                             .stroke()
@@ -118,9 +135,10 @@ struct ContentView: View {
                 }
                 .disabled(isPlaying)
                 
-                Spacer()
-                
-                HStack(spacing: 20) {
+                Group {
+                    Spacer()
+                    Spacer()
+                    
                     Button(action: {
                         if(self.isLongPressing){
                             //this tap was caused by the end of a longpress gesture, so stop our fastforwarding
@@ -134,7 +152,7 @@ struct ContentView: View {
                         Image(systemName: "minus.square")
                             .resizable()
                             .scaledToFit()
-                            .frame(width: 40.0, height: 40.0)
+                            .frame(width: 44.0, height: 44.0)
                     })
                     .simultaneousGesture(
                         LongPressGesture(minimumDuration: 0.2).onEnded { _ in
@@ -145,14 +163,18 @@ struct ContentView: View {
                     })
                     .disabled(isPlaying)
                     
+                    Spacer()
+                    
                     VStack {
                         Text("BPM")
-                            .font(.body)
+                            .font(.system(size: 20, weight: .regular, design: .default))
                         
                         Text(String(bpm))
                             .font(.system(size: 68, weight: .regular, design: .default))
                     }
-                    .frame(width: 128.0)
+                    .frame(width: 124.0)
+                    
+                    Spacer()
                     
                     Button(action: {
                         if(self.isLongPressing){
@@ -165,7 +187,7 @@ struct ContentView: View {
                         Image(systemName: "plus.square")
                             .resizable()
                             .scaledToFit()
-                            .frame(width: 40.0, height: 40.0)
+                            .frame(width: 44.0, height: 44.0)
                     })
                     .simultaneousGesture(
                         LongPressGesture(minimumDuration: 0.2).onEnded { _ in
@@ -175,19 +197,21 @@ struct ContentView: View {
                         })
                     })
                     .disabled(isPlaying)
+                    
+                    Spacer()
+                    Spacer()
                 }
-                
-                Spacer()
                 
                 Button(action: {
                     self.bpm = min(self.bpm * 2, 280)
                 }) {
                     HStack(spacing: 0) {
                         Image(systemName: "multiply")
+                            .font(.system(size: 18, weight: .regular, design: .default))
                         Text("2")
-                            .padding(.trailing, 1.0)
+                            .font(.system(size: 22, weight: .regular, design: .default))
                     }
-                    .padding(.all, 3.0)
+                    .frame(width: 42.0, height: 30.0)
                     .overlay(
                         RoundedRectangle(cornerRadius: 3.0)
                             .stroke()
@@ -197,6 +221,8 @@ struct ContentView: View {
                 
                 Spacer()
             }
+            
+            Spacer()
             
             if isPlaying == false {
                 VStack {
@@ -215,10 +241,9 @@ struct ContentView: View {
                     }
                     
                     Text("スタート")
-                        .font(.body)
+                        .font(.system(size: 18, weight: .regular, design: .default))
                         .foregroundColor(Color.gray)
                 }
-                .padding()
             } else {
                 VStack {
                     Button(action: {
@@ -230,11 +255,12 @@ struct ContentView: View {
                     }
                     
                     Text("ストップ")
-                        .font(.body)
+                        .font(.system(size: 18, weight: .regular, design: .default))
                         .foregroundColor(Color.gray)
                 }
-                .padding()
             }
+            
+            Spacer()
         }
     }
     
@@ -281,9 +307,6 @@ struct ContentView_Previews: PreviewProvider {
             ContentView()
             ContentView()
                 .preferredColorScheme(.dark)
-                .previewDevice("iPhone 8 Plus")
-            ContentView()
-                .previewDevice("iPhone 11 Pro Max")
         }
     }
 }

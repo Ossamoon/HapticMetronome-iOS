@@ -7,10 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0B5A1F33263565380042CE2F /* sound_default_weak.wav in Resources */ = {isa = PBXBuildFile; fileRef = 0B5A1F30263565380042CE2F /* sound_default_weak.wav */; };
-		0B5A1F34263565380042CE2F /* sound_default_middle.wav in Resources */ = {isa = PBXBuildFile; fileRef = 0B5A1F31263565380042CE2F /* sound_default_middle.wav */; };
-		0B5A1F35263565380042CE2F /* sound_default_strong.wav in Resources */ = {isa = PBXBuildFile; fileRef = 0B5A1F32263565380042CE2F /* sound_default_strong.wav */; };
-		B1264C8F259C227200FF2761 /* sound1.aif in Resources */ = {isa = PBXBuildFile; fileRef = B1264C8B259C21EC00FF2761 /* sound1.aif */; };
+		0B1EED6226444BFE004F58AE /* sound_default_middle.wav in Resources */ = {isa = PBXBuildFile; fileRef = 0B1EED5F26444BFE004F58AE /* sound_default_middle.wav */; };
+		0B1EED6326444BFE004F58AE /* sound_default_strong.wav in Resources */ = {isa = PBXBuildFile; fileRef = 0B1EED6026444BFE004F58AE /* sound_default_strong.wav */; };
+		0B1EED6426444BFE004F58AE /* sound_default_weak.wav in Resources */ = {isa = PBXBuildFile; fileRef = 0B1EED6126444BFE004F58AE /* sound_default_weak.wav */; };
 		B1280371258D067400EC11E4 /* HapticMetronome.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1280370258D067400EC11E4 /* HapticMetronome.swift */; };
 		B1ACA5ED258CE10B00C10C3F /* HapticMetronomeApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1ACA5EC258CE10B00C10C3F /* HapticMetronomeApp.swift */; };
 		B1ACA5EF258CE10B00C10C3F /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1ACA5EE258CE10B00C10C3F /* ContentView.swift */; };
@@ -19,10 +18,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		0B5A1F30263565380042CE2F /* sound_default_weak.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = sound_default_weak.wav; path = ../../../../../Downloads/sound/sound_default_weak.wav; sourceTree = "<group>"; };
-		0B5A1F31263565380042CE2F /* sound_default_middle.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = sound_default_middle.wav; path = ../../../../../Downloads/sound/sound_default_middle.wav; sourceTree = "<group>"; };
-		0B5A1F32263565380042CE2F /* sound_default_strong.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = sound_default_strong.wav; path = ../../../../../Downloads/sound/sound_default_strong.wav; sourceTree = "<group>"; };
-		B1264C8B259C21EC00FF2761 /* sound1.aif */ = {isa = PBXFileReference; lastKnownFileType = file; path = sound1.aif; sourceTree = "<group>"; };
+		0B1EED5F26444BFE004F58AE /* sound_default_middle.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = sound_default_middle.wav; path = ../../../../../Desktop/Sounds/sound_default_middle.wav; sourceTree = "<group>"; };
+		0B1EED6026444BFE004F58AE /* sound_default_strong.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = sound_default_strong.wav; path = ../../../../../Desktop/Sounds/sound_default_strong.wav; sourceTree = "<group>"; };
+		0B1EED6126444BFE004F58AE /* sound_default_weak.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = sound_default_weak.wav; path = ../../../../../Desktop/Sounds/sound_default_weak.wav; sourceTree = "<group>"; };
 		B1280370258D067400EC11E4 /* HapticMetronome.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticMetronome.swift; sourceTree = "<group>"; };
 		B1ACA5E9258CE10B00C10C3F /* HapticMetronome.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HapticMetronome.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B1ACA5EC258CE10B00C10C3F /* HapticMetronomeApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticMetronomeApp.swift; sourceTree = "<group>"; };
@@ -46,10 +44,9 @@
 		B1264C88259C20DE00FF2761 /* Sounds */ = {
 			isa = PBXGroup;
 			children = (
-				0B5A1F31263565380042CE2F /* sound_default_middle.wav */,
-				0B5A1F32263565380042CE2F /* sound_default_strong.wav */,
-				0B5A1F30263565380042CE2F /* sound_default_weak.wav */,
-				B1264C8B259C21EC00FF2761 /* sound1.aif */,
+				0B1EED5F26444BFE004F58AE /* sound_default_middle.wav */,
+				0B1EED6026444BFE004F58AE /* sound_default_strong.wav */,
+				0B1EED6126444BFE004F58AE /* sound_default_weak.wav */,
 			);
 			path = Sounds;
 			sourceTree = "<group>";
@@ -150,11 +147,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				B1ACA5F4258CE10E00C10C3F /* Preview Assets.xcassets in Resources */,
-				0B5A1F35263565380042CE2F /* sound_default_strong.wav in Resources */,
+				0B1EED6326444BFE004F58AE /* sound_default_strong.wav in Resources */,
+				0B1EED6226444BFE004F58AE /* sound_default_middle.wav in Resources */,
 				B1ACA5F1258CE10E00C10C3F /* Assets.xcassets in Resources */,
-				0B5A1F33263565380042CE2F /* sound_default_weak.wav in Resources */,
-				B1264C8F259C227200FF2761 /* sound1.aif in Resources */,
-				0B5A1F34263565380042CE2F /* sound_default_middle.wav in Resources */,
+				0B1EED6426444BFE004F58AE /* sound_default_weak.wav in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -305,6 +301,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.Ossamoon.HapticMetronome;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -327,6 +324,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.Ossamoon.HapticMetronome;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
