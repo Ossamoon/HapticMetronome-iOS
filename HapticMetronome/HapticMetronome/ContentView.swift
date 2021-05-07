@@ -80,10 +80,15 @@ struct ContentView: View {
             Group {
                 Spacer()
                 
-                Picker(selection: $beatsMode, label: Text("BeatsMode")) {
-                    ForEach(BeatsMode.allCases) {
-                        Text($0.rawValue).tag($0)
-                    }
+                Picker("BeatsMode", selection: $beatsMode) {
+                    Text("none").tag(BeatsMode.none)
+                    Text("beat2").tag(BeatsMode.beat2)
+                    Text("beat3").tag(BeatsMode.beat3)
+                    Text("beat4").tag(BeatsMode.beat4)
+                    Text("beat5").tag(BeatsMode.beat5)
+                    Text("beat6").tag(BeatsMode.beat6)
+                    Text("beat7").tag(BeatsMode.beat7)
+                    Text("beat8").tag(BeatsMode.beat8)
                 }
                 .pickerStyle(SegmentedPickerStyle())
                 .disabled(isPlaying)
@@ -91,10 +96,11 @@ struct ContentView: View {
                 
                 Spacer()
                 
-                Picker(selection: $tapletMode, label: Text("TapletMode")) {
-                    ForEach(TapletMode.allCases) {
-                        Text($0.rawValue).tag($0)
-                    }
+                Picker("TapletMode", selection: $tapletMode) {
+                    Text("none").tag(TapletMode.none)
+                    Text("tap2").tag(TapletMode.tap2)
+                    Text("tap3").tag(TapletMode.tap3)
+                    Text("tap4").tag(TapletMode.tap4)
                 }
                 .pickerStyle(SegmentedPickerStyle())
                 .disabled(isPlaying)
@@ -102,10 +108,11 @@ struct ContentView: View {
                 
                 Spacer()
                 
-                Picker(selection: $hapticMode, label: Text("HapticMode")) {
-                    ForEach(HapticMode.allCases) {
-                        Text($0.rawValue).tag($0)
-                    }
+                Picker("HapticMode", selection: $hapticMode) {
+                    Text("off").tag(HapticMode.off)
+                    Text("click").tag(HapticMode.click)
+                    Text("vibrationShort").tag(HapticMode.vibrationShort)
+                    Text("vibrationLong").tag(HapticMode.vibrationLong)
                 }
                 .pickerStyle(SegmentedPickerStyle())
                 .disabled(isPlaying)
@@ -240,7 +247,7 @@ struct ContentView: View {
                         
                     }
                     
-                    Text("スタート")
+                    Text("start")
                         .font(.system(size: 18, weight: .regular, design: .default))
                         .foregroundColor(Color.gray)
                 }
@@ -254,7 +261,7 @@ struct ContentView: View {
                             .frame(width: 80.0, height: 80.0)
                     }
                     
-                    Text("ストップ")
+                    Text("stop")
                         .font(.system(size: 18, weight: .regular, design: .default))
                         .foregroundColor(Color.gray)
                 }
@@ -271,32 +278,32 @@ struct ContentView: View {
 }
 
 enum BeatsMode: String, CaseIterable, Identifiable {
-    case none = "なし"
-    case beat2 = "2拍子"
-    case beat3 = "3拍子"
-    case beat4 = "4拍子"
-    case beat5 = "5拍子"
-    case beat6 = "6拍子"
-    case beat7 = "7拍子"
-    case beat8 = "8拍子"
+    case none
+    case beat2
+    case beat3
+    case beat4
+    case beat5
+    case beat6
+    case beat7
+    case beat8
     
     var id: String { rawValue }
 }
 
 enum TapletMode: String, CaseIterable, Identifiable {
-    case none = "なし"
-    case tap2 = "2連符"
-    case tap3 = "3連符"
-    case tap4 = "4連符"
+    case none
+    case tap2
+    case tap3
+    case tap4
     
     var id: String { rawValue }
 }
 
 enum HapticMode: String, CaseIterable, Identifiable {
-    case off = "なし"
-    case click = "クリック"
-    case vibrationShort = "バイブ(短)"
-    case vibrationLong = "バイブ(長)"
+    case off
+    case click
+    case vibrationShort
+    case vibrationLong
     
     var id: String { rawValue }
 }
@@ -306,7 +313,7 @@ struct ContentView_Previews: PreviewProvider {
         Group {
             ContentView()
             ContentView()
-                .preferredColorScheme(.dark)
+                .environment(\.locale, .init(identifier: "ja"))
         }
     }
 }

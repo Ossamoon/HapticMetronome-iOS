@@ -1,0 +1,25 @@
+/* 
+  Localizable.strings
+  HapticMetronome
+
+  Created by 齋藤修 on 2021/05/07.
+  
+*/
+
+"start" = "スタート";
+"stop" = "ストップ";
+"none" = "なし";
+"off" = "なし";
+"beat2" = "2拍子";
+"beat3" = "3拍子";
+"beat4" = "4拍子";
+"beat5" = "5拍子";
+"beat6" = "6拍子";
+"beat7" = "7拍子";
+"beat8" = "8拍子";
+"tap2" = "2連符";
+"tap3" = "3連符";
+"tap4" = "4連符";
+"click" = "クリック";
+"vibrationShort" = "バイブ(短)";
+"vibrationLong" = "バイブ(長)";
