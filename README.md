@@ -1,5 +1,5 @@
 # HapticMetronome-iOS
-Core Hapticsを利用した触覚フィードバックメトロノームiOSアプリ
+<a href="https://developer.apple.com/documentation/corehaptics">Core Haptics</a>を利用した触覚フィードバックメトロノームiOSアプリ
 
 ### App Storeでリリース中
 
