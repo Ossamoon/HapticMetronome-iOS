@@ -1,13 +1,9 @@
 # HapticMetronome-iOS
 <a href="https://developer.apple.com/documentation/corehaptics">Core Haptics</a>を利用した触覚フィードバックメトロノームiOSアプリ
 
-### App Storeでリリース中
-
-<a href="https://apps.apple.com/jp/app/haptic-metronome/id1565909516"><img src="https://user-images.githubusercontent.com/73047429/117178351-e6cd8000-ae0c-11eb-92f2-a5e51b7908ee.png" alt="[Badge]" width="180px"><a/>
-
-App Storeで当アプリを無料で配信しています。対応機種はiPhone 8以降になります。iOS 14.1以上対応です。
-
-<img width="713" alt="スクリーンショット 2021-05-18 22 21 56" src="https://user-images.githubusercontent.com/73047429/118659457-4b82d480-b828-11eb-8b5b-99af68121e6b.png">
+## 動作要件
+* iPhone8~
+* iOS14~
 
 ## 搭載機能
 - BPMが12~280で設定可能
